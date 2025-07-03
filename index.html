@@ -2263,6 +2263,109 @@
   </div>
 
 <script>
+
+
+  // Adicionei o arquivo para LER O LOCAL STORAGE
+// No início do seu script.js ou dentro das tags <script> no index.html
+function loadMenuData() {
+  const savedProducts = JSON.parse(localStorage.getItem('products')) || [];
+  const savedCategories = JSON.parse(localStorage.getItem('categories')) || [];
+  const savedSettings = JSON.parse(localStorage.getItem('settings')) || {};
+  
+  // Atualiza as configurações do cabeçalho
+  if (savedSettings.businessName) {
+    document.querySelector('.header h1').textContent = savedSettings.businessName;
+  }
+  if (savedSettings.businessLocation) {
+    document.querySelector('.header p:nth-of-type(2)').textContent = savedSettings.businessLocation;
+  }
+  if (savedSettings.businessDescription) {
+    document.querySelector('.header p:nth-of-type(3)').textContent = savedSettings.businessDescription;
+  }
+  
+  // Atualiza os links sociais
+  if (savedSettings.instagramUrl) {
+    document.querySelector('.social-links a[title="Instagram"]').href = savedSettings.instagramUrl;
+  }
+  if (savedSettings.whatsappNumber) {
+    document.querySelector('.social-links a[title="WhatsApp"]').href = `https://wa.me/${savedSettings.whatsappNumber}`;
+  }
+  if (savedSettings.menuUrl) {
+    document.querySelector('.social-links a[title="Menuimpresso"]').href = savedSettings.menuUrl;
+  }
+  
+  // Agrupa produtos por categoria
+  const productsByCategory = {};
+  savedProducts.forEach(product => {
+    if (!productsByCategory[product.category]) {
+      productsByCategory[product.category] = [];
+    }
+    productsByCategory[product.category].push(product);
+  });
+  
+  // Cria o HTML para cada categoria
+  for (const categoryId in productsByCategory) {
+    const category = savedCategories.find(c => c.id === categoryId);
+    if (!category) continue;
+    
+    const categoryElement = document.getElementById(categoryId);
+    if (!categoryElement) continue;
+    
+    // Limpa o conteúdo da categoria (exceto o cabeçalho)
+    while (categoryElement.children.length > 1) {
+      categoryElement.removeChild(categoryElement.lastChild);
+    }
+    
+    // Adiciona os produtos
+    productsByCategory[categoryId].forEach(product => {
+      const sectionClass = product.section === 'salty' ? 'section-salty' : 
+                         product.section === 'sweet' ? 'section-sweet' : '';
+      
+      const sectionTitle = product.section === 'salty' ? 
+        '<div class="section-title">Salgados</div>' : 
+        product.section === 'sweet' ? '<div class="section-title">Doces</div>' : '';
+      
+      const itemHTML = `
+        ${sectionTitle ? sectionTitle : ''}
+        <div class="item ${sectionClass}">
+          <img src="${product.image}" alt="${product.name}" class="item-image" 
+               onclick="openItemModal('${product.name}', '${product.description}', '${product.image}')">
+          <div class="item-details">
+            <h3 class="item-title">${product.name} - R$${product.price.toFixed(2)}</h3>
+            <p class="item-description">${product.description}</p>
+            <div class="item-price">R$ ${product.price.toFixed(2)}</div>
+            <div class="item-actions">
+              <button class="add-to-cart" 
+                      onclick="${product.hasAddons ? 
+                        `openAddonsModal('${product.name}', ${product.price}, '${product.image}')` : 
+                        `openNotesModal('${product.name}', ${product.price}, '${product.image}')`}">
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      categoryElement.insertAdjacentHTML('beforeend', itemHTML);
+    });
+  }
+}
+
+// Chama a função quando a página carrega
+window.addEventListener('DOMContentLoaded', loadMenuData);
+// Adicionei o arquivo para LER O LOCAL STORAGE
+
+
+
+
+
+
+  
+
+
+
+
+  
     let cart = [];
     let currentItem = null;
     let currentAddons = [];
