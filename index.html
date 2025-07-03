@@ -2264,6 +2264,21 @@
 
 <script>
 
+// Adicionei USUÁRIO E SENHA
+
+// No início do script do admin.html
+const ADMIN_PASSWORD = "pitiusenha"; // Altere para uma senha segura
+
+function checkPassword() {
+  const password = prompt("Digite a senha de administração:");
+  if (password !== ADMIN_PASSWORD) {
+    alert("Senha incorreta!");
+    window.location.href = "index.html";
+  }
+}
+
+window.addEventListener('DOMContentLoaded', checkPassword);
+  
 
   // Adicionei o arquivo para LER O LOCAL STORAGE
 // No início do seu script.js ou dentro das tags <script> no index.html
