@@ -2264,110 +2264,128 @@
 
 <script>
 
-// Adicionei USUÁRIO E SENHA
 
-// No início do script do admin.html
-const ADMIN_PASSWORD = "pitiusenha"; // Altere para uma senha segura
 
-function checkPassword() {
-  const password = prompt("Digite a senha de administração:");
-  if (password !== ADMIN_PASSWORD) {
-    alert("Senha incorreta!");
-    window.location.href = "index.html";
-  }
-}
-
-window.addEventListener('DOMContentLoaded', checkPassword);
   
+// Adicionei AQUI
 
-  // Adicionei o arquivo para LER O LOCAL STORAGE
-// No início do seu script.js ou dentro das tags <script> no index.html
+<script>
+// Função para carregar os dados do localStorage
 function loadMenuData() {
-  const savedProducts = JSON.parse(localStorage.getItem('products')) || [];
-  const savedCategories = JSON.parse(localStorage.getItem('categories')) || [];
-  const savedSettings = JSON.parse(localStorage.getItem('settings')) || {};
-  
-  // Atualiza as configurações do cabeçalho
-  if (savedSettings.businessName) {
-    document.querySelector('.header h1').textContent = savedSettings.businessName;
+  // Verifica se há dados salvos
+  if (!localStorage.getItem('products') || !localStorage.getItem('categories')) {
+    console.log('Usando cardápio padrão (hardcoded)');
+    return; // Mantém o conteúdo original se não houver dados
   }
-  if (savedSettings.businessLocation) {
-    document.querySelector('.header p:nth-of-type(2)').textContent = savedSettings.businessLocation;
+
+  const products = JSON.parse(localStorage.getItem('products'));
+  const categories = JSON.parse(localStorage.getItem('categories'));
+  const settings = JSON.parse(localStorage.getItem('settings')) || {};
+
+  // Atualiza configurações do cabeçalho
+  if (settings.businessName) {
+    document.querySelector('.header h1').textContent = settings.businessName;
   }
-  if (savedSettings.businessDescription) {
-    document.querySelector('.header p:nth-of-type(3)').textContent = savedSettings.businessDescription;
+  if (settings.businessLocation) {
+    const locationP = document.querySelector('.header p:nth-of-type(2)');
+    if (locationP) locationP.textContent = settings.businessLocation;
   }
-  
-  // Atualiza os links sociais
-  if (savedSettings.instagramUrl) {
-    document.querySelector('.social-links a[title="Instagram"]').href = savedSettings.instagramUrl;
+
+  // Atualiza links sociais
+  if (settings.instagramUrl) {
+    const instagramLink = document.querySelector('.social-links a[title="Instagram"]');
+    if (instagramLink) instagramLink.href = settings.instagramUrl;
   }
-  if (savedSettings.whatsappNumber) {
-    document.querySelector('.social-links a[title="WhatsApp"]').href = `https://wa.me/${savedSettings.whatsappNumber}`;
+  if (settings.whatsappNumber) {
+    const whatsappLink = document.querySelector('.social-links a[title="WhatsApp"]');
+    if (whatsappLink) whatsappLink.href = `https://wa.me/${settings.whatsappNumber}`;
   }
-  if (savedSettings.menuUrl) {
-    document.querySelector('.social-links a[title="Menuimpresso"]').href = savedSettings.menuUrl;
-  }
-  
-  // Agrupa produtos por categoria
-  const productsByCategory = {};
-  savedProducts.forEach(product => {
-    if (!productsByCategory[product.category]) {
-      productsByCategory[product.category] = [];
+
+  // Função auxiliar para criar elementos HTML
+  function createProductElement(product) {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'item';
+    if (product.section) {
+      itemDiv.classList.add(`section-${product.section}`);
     }
-    productsByCategory[product.category].push(product);
-  });
-  
-  // Cria o HTML para cada categoria
-  for (const categoryId in productsByCategory) {
-    const category = savedCategories.find(c => c.id === categoryId);
-    if (!category) continue;
-    
-    const categoryElement = document.getElementById(categoryId);
-    if (!categoryElement) continue;
-    
-    // Limpa o conteúdo da categoria (exceto o cabeçalho)
-    while (categoryElement.children.length > 1) {
-      categoryElement.removeChild(categoryElement.lastChild);
-    }
-    
-    // Adiciona os produtos
-    productsByCategory[categoryId].forEach(product => {
-      const sectionClass = product.section === 'salty' ? 'section-salty' : 
-                         product.section === 'sweet' ? 'section-sweet' : '';
-      
-      const sectionTitle = product.section === 'salty' ? 
-        '<div class="section-title">Salgados</div>' : 
-        product.section === 'sweet' ? '<div class="section-title">Doces</div>' : '';
-      
-      const itemHTML = `
-        ${sectionTitle ? sectionTitle : ''}
-        <div class="item ${sectionClass}">
-          <img src="${product.image}" alt="${product.name}" class="item-image" 
-               onclick="openItemModal('${product.name}', '${product.description}', '${product.image}')">
-          <div class="item-details">
-            <h3 class="item-title">${product.name} - R$${product.price.toFixed(2)}</h3>
-            <p class="item-description">${product.description}</p>
-            <div class="item-price">R$ ${product.price.toFixed(2)}</div>
-            <div class="item-actions">
-              <button class="add-to-cart" 
-                      onclick="${product.hasAddons ? 
-                        `openAddonsModal('${product.name}', ${product.price}, '${product.image}')` : 
-                        `openNotesModal('${product.name}', ${product.price}, '${product.image}')`}">
-                Adicionar
-              </button>
-            </div>
-          </div>
+
+    itemDiv.innerHTML = `
+      <img src="${product.image || 'black.png'}" alt="${product.name}" class="item-image">
+      <div class="item-details">
+        <h3 class="item-title">${product.name} - R$${product.price.toFixed(2)}</h3>
+        <p class="item-description">${product.description}</p>
+        <div class="item-price">R$ ${product.price.toFixed(2)}</div>
+        <div class="item-actions">
+          <button class="add-to-cart">
+            Adicionar
+          </button>
         </div>
-      `;
-      
-      categoryElement.insertAdjacentHTML('beforeend', itemHTML);
-    });
+      </div>
+    `;
+
+    // Adiciona eventos
+    const img = itemDiv.querySelector('.item-image');
+    img.onclick = () => openItemModal(product.name, product.description, product.image || 'black.png');
+
+    const btn = itemDiv.querySelector('.add-to-cart');
+    btn.onclick = product.hasAddons ?
+      () => openAddonsModal(product.name, product.price, product.image || 'black.png') :
+      () => openNotesModal(product.name, product.price, product.image || 'black.png');
+
+    return itemDiv;
   }
+
+  // Processa cada categoria
+  categories.forEach(category => {
+    const categorySection = document.getElementById(category.id);
+    if (!categorySection) return;
+
+    // Limpa a categoria (exceto o cabeçalho)
+    while (categorySection.children.length > 1) {
+      categorySection.removeChild(categorySection.lastChild);
+    }
+
+    // Filtra produtos da categoria
+    const categoryProducts = products.filter(p => p.category === category.id);
+
+    // Agrupa por seção (salty/sweet)
+    const sections = {
+      salty: categoryProducts.filter(p => p.section === 'salty'),
+      sweet: categoryProducts.filter(p => p.section === 'sweet'),
+      none: categoryProducts.filter(p => !p.section)
+    };
+
+    // Adiciona produtos sem seção diretamente
+    sections.none.forEach(product => {
+      categorySection.appendChild(createProductElement(product));
+    });
+
+    // Adiciona seções salgadas/doces se necessário
+    if (sections.salty.length > 0) {
+      const saltyDiv = document.createElement('div');
+      saltyDiv.className = 'section-salty';
+      saltyDiv.innerHTML = '<div class="section-title">Salgados</div>';
+      sections.salty.forEach(product => {
+        saltyDiv.appendChild(createProductElement(product));
+      });
+      categorySection.appendChild(saltyDiv);
+    }
+
+    if (sections.sweet.length > 0) {
+      const sweetDiv = document.createElement('div');
+      sweetDiv.className = 'section-sweet';
+      sweetDiv.innerHTML = '<div class="section-title">Doces</div>';
+      sections.sweet.forEach(product => {
+        sweetDiv.appendChild(createProductElement(product));
+      });
+      categorySection.appendChild(sweetDiv);
+    }
+  });
 }
 
-// Chama a função quando a página carrega
+// Carrega os dados quando a página é aberta
 window.addEventListener('DOMContentLoaded', loadMenuData);
+</script>
 // Adicionei o arquivo para LER O LOCAL STORAGE
 
 
