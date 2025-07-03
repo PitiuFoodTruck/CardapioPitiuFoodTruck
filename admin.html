@@ -1008,7 +1008,13 @@
 
 
 
-
+// No admin.html
+window.addEventListener('storage', function(event) {
+  if (event.key === 'adminOrders' || event.key === 'newOrderNotification') {
+    loadData();
+    checkNewOrders();
+  }
+});
 
     
 
