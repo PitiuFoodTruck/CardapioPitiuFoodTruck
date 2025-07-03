@@ -422,6 +422,32 @@
   </div>
   
   <script>
+
+  
+// Senha de administração (ALTERE PARA UMA SENHA SEGURA)
+const ADMIN_PASSWORD = "pitiu2023";
+
+// Verificação de acesso
+function checkAuth() {
+  const authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
+  
+  if (!authenticated) {
+    const password = prompt("Acesso Restrito\nDigite a senha de administração:");
+    
+    if (password !== ADMIN_PASSWORD) {
+      alert("Acesso negado!");
+      window.location.href = "index.html";
+    } else {
+      sessionStorage.setItem('admin-authenticated', 'true');
+    }
+  }
+}
+
+// Executa ao carregar a página
+window.addEventListener('DOMContentLoaded', checkAuth);
+
+
+    
     // Dados iniciais
     let products = [];
     let categories = [];
