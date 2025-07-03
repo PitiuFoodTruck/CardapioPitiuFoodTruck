@@ -2263,6 +2263,76 @@
   </div>
 
 <script>
+
+
+
+
+
+// Função para enviar o pedido para o painel administrativo
+function sendOrderToAdmin(orderData) {
+  // Obter pedidos existentes do localStorage
+  let orders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+  
+  // Adicionar novo pedido
+  orders.push({
+    id: orderData.code,
+    customer: {
+      name: orderData.name,
+      phone: orderData.phone
+    },
+    items: cart.map(item => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      notes: item.notes || ''
+    })),
+    total: calculateTotal(),
+    status: 'received',
+    date: new Date().toISOString(),
+    deliveryOption: getSelectedDeliveryOption(),
+    address: getAddressData(),
+    paymentMethod: getPaymentMethod(),
+    changeFor: getChangeFor()
+  });
+  
+  // Salvar no localStorage
+  localStorage.setItem('adminOrders', JSON.stringify(orders));
+  
+  // Notificar o admin sobre novo pedido (opcional)
+  localStorage.setItem('newOrderNotification', 'true');
+}
+
+// Modifique a função submitOrder para chamar sendOrderToAdmin
+function submitOrder() {
+  // ... código existente ...
+  
+  // Após enviar para o WhatsApp, envie para o painel admin
+  const orderData = {
+    code: orderCode,
+    name: name,
+    phone: phone,
+    // outros dados necessários
+  };
+  
+  sendOrderToAdmin(orderData);
+  
+  // ... resto do código existente ...
+}
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
     let cart = [];
     let currentItem = null;
     let currentAddons = [];
