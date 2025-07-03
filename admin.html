@@ -1005,6 +1005,59 @@
   </div>
 
   <script>
+
+
+
+
+
+    
+
+function loadData() {
+  // Carrega pedidos do localStorage específico do admin
+  orders = JSON.parse(localStorage.getItem('adminOrders')) || [];
+  
+  // Resto do código existente...
+  
+  // Verifica se há novos pedidos
+  checkNewOrders();
+}
+
+// Atualize a função checkNewOrders
+function checkNewOrders() {
+  const hasNewOrder = localStorage.getItem('newOrderNotification') === 'true';
+  
+  if (hasNewOrder) {
+    // Mostrar notificação
+    showStatus('Novo pedido recebido!', 'success');
+    
+    // Remover a notificação
+    localStorage.removeItem('newOrderNotification');
+    
+    // Atualizar a lista de pedidos
+    updateDashboardStats();
+    updateOrdersList();
+  }
+  
+  // Atualizar badge de novos pedidos
+  const newOrdersCount = orders.filter(o => o.status === 'received').length;
+  document.getElementById('new-orders-badge').textContent = newOrdersCount;
+}
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    
     // Dados iniciais
     let orders = [];
     let products = [];
