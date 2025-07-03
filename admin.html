@@ -318,9 +318,17 @@
         <textarea id="import-data" rows="10" placeholder="Cole o JSON aqui"></textarea>
       </div>
       
+      <div class="form-group">
+        <label for="full-json-input">Importar do JSON Completo</label>
+        <textarea id="full-json-input" rows="10" placeholder="Cole o JSON completo aqui"></textarea>
+      </div>
+      
       <div class="actions">
         <button class="btn btn-success" onclick="importData()">
           <i class="fas fa-upload"></i> Importar Dados
+        </button>
+        <button class="btn btn-primary" onclick="importFullMenuData()">
+          <i class="fas fa-file-import"></i> Importar do JSON Completo
         </button>
       </div>
     </div>
@@ -422,37 +430,124 @@
   </div>
   
   <script>
+    // Senha de administração (ALTERE PARA UMA SENHA SEGURA)
+    const ADMIN_PASSWORD = "pitiu2023";
 
-  
-// Senha de administração (ALTERE PARA UMA SENHA SEGURA)
-const ADMIN_PASSWORD = "pitiu2023";
-
-// Verificação de acesso
-function checkAuth() {
-  const authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
-  
-  if (!authenticated) {
-    const password = prompt("Acesso Restrito\nDigite a senha de administração:");
-    
-    if (password !== ADMIN_PASSWORD) {
-      alert("Acesso negado!");
-      window.location.href = "index.html";
-    } else {
-      sessionStorage.setItem('admin-authenticated', 'true');
+    // Verificação de acesso
+    function checkAuth() {
+      const authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
+      
+      if (!authenticated) {
+        const password = prompt("Acesso Restrito\nDigite a senha de administração:");
+        
+        if (password !== ADMIN_PASSWORD) {
+          alert("Acesso negado!");
+          window.location.href = "index.html";
+        } else {
+          sessionStorage.setItem('admin-authenticated', 'true');
+        }
+      }
     }
-  }
-}
 
-// Executa ao carregar a página
-window.addEventListener('DOMContentLoaded', checkAuth);
+    // Executa ao carregar a página
+    window.addEventListener('DOMContentLoaded', checkAuth);
 
-
-    
     // Dados iniciais
     let products = [];
     let categories = [];
     let settings = {};
     let editingId = null;
+    
+    // Função para converter seu formato JSON para o formato do gerenciador
+    function convertMenuData(fullData) {
+      const result = {
+        products: [],
+        categories: [],
+        settings: {
+          businessName: fullData.restaurant.name,
+          businessLogo: fullData.restaurant.logo,
+          businessLocation: fullData.restaurant.location,
+          businessDescription: fullData.restaurant.contact,
+          whatsappNumber: fullData.restaurant.socialLinks.find(l => l.title === 'WhatsApp').url.replace('https://wa.me/', ''),
+          instagramUrl: fullData.restaurant.socialLinks.find(l => l.title === 'Instagram').url,
+          menuUrl: fullData.restaurant.socialLinks.find(l => l.title === 'Menuimpresso').url,
+          backgroundImage: 'backgroundfoodtruckpitiu.png'
+        }
+      };
+
+      // Processa cada seção do menu
+      fullData.menu.sections.forEach(section => {
+        // Adiciona categoria principal
+        result.categories.push({
+          id: section.id,
+          name: section.name,
+          section: ''
+        });
+
+        // Processa itens principais
+        if (section.items) {
+          section.items.forEach(item => {
+            result.products.push({
+              id: item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+              name: item.name,
+              description: item.description,
+              price: item.price,
+              category: section.id,
+              image: item.image,
+              section: '',
+              hasAddons: item.addons || false
+            });
+          });
+        }
+
+        // Processa subseções (salty/sweet)
+        if (section.subsections) {
+          section.subsections.forEach(sub => {
+            sub.items.forEach(item => {
+              result.products.push({
+                id: item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                category: section.id,
+                image: item.image,
+                section: sub.type,
+                hasAddons: false
+              });
+            });
+          });
+        }
+
+        // Adicionais para hambúrgueres
+        if (section.addons) {
+          localStorage.setItem('hamburgerAddons', JSON.stringify(section.addons));
+        }
+      });
+
+      return result;
+    }
+
+    // Função para importar seu JSON completo
+    function importFullMenuData() {
+      const jsonInput = document.getElementById('full-json-input').value;
+      try {
+        const fullData = JSON.parse(jsonInput);
+        const convertedData = convertMenuData(fullData);
+        
+        // Salva os dados convertidos
+        localStorage.setItem('products', JSON.stringify(convertedData.products));
+        localStorage.setItem('categories', JSON.stringify(convertedData.categories));
+        localStorage.setItem('settings', JSON.stringify(convertedData.settings));
+        
+        // Recarrega os dados na interface
+        loadData();
+        
+        alert('Dados convertidos e salvos com sucesso!');
+      } catch (error) {
+        showStatus('Erro ao processar JSON: ' + error.message, 'error');
+        console.error(error);
+      }
+    }
     
     // Carrega os dados do localStorage
     function loadData() {
