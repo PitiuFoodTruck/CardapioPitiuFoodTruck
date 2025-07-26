@@ -1781,7 +1781,7 @@
       const statusElement = document.getElementById('status-text');
       
       // Aberto de domingo a domingo das 19h às 00h
-      if (hours >= 19 || hours < 0) {
+      if (hours >= 7 || hours < 0) {
         statusElement.textContent = 'Aberto';
         statusElement.className = 'status open';
         return true;
