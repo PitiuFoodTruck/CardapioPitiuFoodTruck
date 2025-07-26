@@ -59,6 +59,7 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 70px; /* Espaço para o rodapé fixo */
     }
     
     /* Header estilo iFood */
@@ -175,7 +176,6 @@
       flex-direction: column;
       max-width: 1200px;
       margin: 0 auto;
-      padding-bottom: 80px;
     }
     
     /* Seção de itens */
@@ -202,6 +202,7 @@
       box-shadow: var(--shadow);
       overflow: hidden;
       transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
     }
     
     .item:hover {
@@ -260,128 +261,198 @@
       background-color: var(--primary-dark);
     }
     
-    /* Carrinho estilo iFood */
-    .cart-section {
+    /* Modal de item */
+    .item-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .item-modal-content {
+      background-color: white;
+      margin: 20px auto;
+      max-width: 500px;
+      width: 95%;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .item-modal-header {
+      position: relative;
+    }
+    
+    .item-modal-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .close-item-modal {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .item-modal-body {
+      padding: 15px;
+    }
+    
+    .item-modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .item-modal-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    
+    .item-modal-description {
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    .item-modal-notes {
+      margin-bottom: 20px;
+    }
+    
+    .item-modal-notes label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .item-modal-notes textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--gray-medium);
+      border-radius: 4px;
+      font-size: 14px;
+      resize: none;
+      min-height: 80px;
+    }
+    
+    .item-modal-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--gray-medium);
+      background-color: white;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .quantity-value {
+      margin: 0 15px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .add-to-cart-modal {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      flex-grow: 1;
+      margin-left: 15px;
+    }
+    
+    .add-to-cart-modal:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    /* Rodapé fixo estilo iFood */
+    .footer-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background-color: white;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-      padding: 15px;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
       z-index: 100;
-      transform: translateY(0);
-      transition: transform 0.3s ease;
     }
     
-    .cart-section.hidden {
-      transform: translateY(100%);
-    }
-    
-    .cart-header {
+    .footer-nav-item {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      margin-bottom: 10px;
+      color: var(--gray-dark);
+      text-decoration: none;
+      font-size: 10px;
+      cursor: pointer;
     }
     
-    .cart-title {
-      font-size: 16px;
-      font-weight: 600;
+    .footer-nav-item i {
+      font-size: 20px;
+      margin-bottom: 3px;
     }
     
-    .cart-toggle {
-      background: none;
-      border: none;
+    .footer-nav-item.active {
       color: var(--primary-color);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
     }
     
-    .cart-items {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      border-bottom: 1px solid var(--gray-medium);
-      padding-bottom: 10px;
-    }
-    
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    
-    .cart-item-name {
-      flex: 1;
-      font-size: 14px;
-    }
-    
-    .cart-item-price {
-      font-weight: 600;
-      font-size: 14px;
-    }
-    
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      margin-left: 10px;
-    }
-    
-    .quantity-btn {
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      border: 1px solid var(--gray-medium);
-      background-color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    
-    .quantity-value {
-      margin: 0 8px;
-      font-size: 14px;
-    }
-    
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-    
-    .cart-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .cart-button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 4px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .checkout-button {
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
       background-color: var(--primary-color);
       color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
-    .checkout-button:hover {
-      background-color: var(--primary-dark);
-    }
-    
-    .clear-button {
-      background-color: var(--gray-medium);
-      color: var(--dark-color);
-    }
-    
-    .clear-button:hover {
-      background-color: #d4d4d4;
+    .footer-nav-item.cart-item {
+      position: relative;
     }
     
     /* Modal de checkout estilo iFood */
@@ -560,24 +631,6 @@
         padding-right: 20px;
       }
       
-      .cart-section {
-        position: sticky;
-        top: 0;
-        bottom: auto;
-        margin-top: 20px;
-        max-width: 350px;
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-      }
-      
-      .header-container {
-        padding: 0 20px;
-      }
-      
-      .categories {
-        padding: 15px 20px;
-      }
-      
       .item {
         display: flex;
       }
@@ -590,6 +643,22 @@
       .item-details {
         flex: 1;
       }
+      
+      .header-container {
+        padding: 0 20px;
+      }
+      
+      .categories {
+        padding: 15px 20px;
+      }
+      
+      .item-modal-content {
+        margin: 40px auto;
+      }
+      
+      .item-modal-image {
+        height: 250px;
+      }
     }
     
     /* Animações */
@@ -600,6 +669,15 @@
     
     .category {
       animation: fadeIn 0.3s ease-out forwards;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    
+    .item-modal {
+      animation: slideUp 0.3s ease-out forwards;
     }
   </style>
 </head>
@@ -648,19 +726,12 @@
 
 
 
+
    <div class="container">
     <div class="menu-section">
       <!-- Hambúrgueres -->
       <div id="hamburgueres" class="category">
         <div class="category-header">Hambúrgueres Artesanais</div>
-
-
-
-
-
-
-
-        
         <div class="item">
           <img src="https://source.unsplash.com/random/300x300/?burger,1" alt="Carne no Prato" class="item-image" onclick="openItemModal('Carne no Prato', 'Blend da casa de 180g, queijo prato e mussarela no pão brioche.', 'https://source.unsplash.com/random/300x300/?burger,1')">
           <div class="item-details">
@@ -757,6 +828,9 @@
           </div>
         </div>
       </div>
+
+
+
 
       <!-- Pão de Queijo -->
       <div id="pao-queijo" class="category">
@@ -1522,27 +1596,31 @@
 
 
 
-
-
-
-
-
-    <!-- Carrinho de compras -->
-    <div class="cart-section">
-      <div class="cart-header">
-        <h3 class="cart-title">Seu Pedido</h3>
-        <button class="cart-toggle" onclick="toggleCart()">Ocultar</button>
+ <!-- Modal de item -->
+  <div id="item-modal" class="item-modal">
+    <div class="item-modal-content">
+      <div class="item-modal-header">
+        <img id="item-modal-image" src="" alt="" class="item-modal-image">
+        <button class="close-item-modal" onclick="closeItemModal()">&times;</button>
       </div>
-      <div id="cart-items" class="cart-items">
-        <div style="text-align: center; padding: 20px; color: var(--gray-dark);">Seu carrinho está vazio</div>
-      </div>
-      <div class="cart-total">
-        <span>Total</span>
-        <span id="cart-total">R$ 0,00</span>
-      </div>
-      <div class="cart-actions">
-        <button class="cart-button clear-button" onclick="clearCart()">Limpar</button>
-        <button class="cart-button checkout-button" onclick="openCheckoutModal()">Finalizar Pedido</button>
+      <div class="item-modal-body">
+        <h3 id="item-modal-title" class="item-modal-title"></h3>
+        <div id="item-modal-price" class="item-modal-price"></div>
+        <p id="item-modal-description" class="item-modal-description"></p>
+        
+        <div class="item-modal-notes">
+          <label for="item-notes">Alguma observação sobre este item?</label>
+          <textarea id="item-notes" placeholder="Ex: Sem cebola, maionese à parte, etc."></textarea>
+        </div>
+        
+        <div class="item-modal-actions">
+          <div class="quantity-selector">
+            <button class="quantity-btn" onclick="updateModalQuantity(-1)">-</button>
+            <span id="modal-quantity" class="quantity-value">1</span>
+            <button class="quantity-btn" onclick="updateModalQuantity(1)">+</button>
+          </div>
+          <button id="add-to-cart-modal-btn" class="add-to-cart-modal" onclick="addItemFromModal()">Adicionar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1657,10 +1735,33 @@
     </div>
   </div>
 
+  <!-- Rodapé fixo estilo iFood -->
+  <div class="footer-nav">
+    <div class="footer-nav-item active">
+      <i class="fas fa-home"></i>
+      <span>Início</span>
+    </div>
+    <div class="footer-nav-item">
+      <i class="fas fa-search"></i>
+      <span>Buscar</span>
+    </div>
+    <div class="footer-nav-item cart-item" onclick="openCheckoutModal()">
+      <i class="fas fa-shopping-bag"></i>
+      <span>Carrinho</span>
+      <div id="cart-badge" class="cart-badge" style="display: none;">0</div>
+    </div>
+    <div class="footer-nav-item">
+      <i class="fas fa-user"></i>
+      <span>Conta</span>
+    </div>
+  </div>
+
   <script>
     // Variáveis globais
     let cart = [];
     let orderNumber = 1000;
+    let currentItem = null;
+    let currentQuantity = 1;
     const deliveryFees = {
       'Cascadura': 12,
       'Madureira': 10,
@@ -1680,7 +1781,7 @@
       const statusElement = document.getElementById('status-text');
       
       // Aberto de domingo a domingo das 19h às 00h
-      if (hours >= 7 || hours < 0) {
+      if (hours >= 19 || hours < 0) {
         statusElement.textContent = 'Aberto';
         statusElement.className = 'status open';
         return true;
@@ -1689,6 +1790,47 @@
         statusElement.className = 'status closed';
         return false;
       }
+    }
+    
+    // Abre modal do item
+    function openItemModal(name, description, price, image) {
+      currentItem = { name, description, price, image };
+      currentQuantity = 1;
+      
+      document.getElementById('item-modal-title').textContent = name;
+      document.getElementById('item-modal-description').textContent = description;
+      document.getElementById('item-modal-price').textContent = `R$ ${price.toFixed(2)}`;
+      document.getElementById('item-modal-image').src = image;
+      document.getElementById('modal-quantity').textContent = '1';
+      document.getElementById('item-notes').value = '';
+      
+      document.getElementById('item-modal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Fecha modal do item
+    function closeItemModal() {
+      document.getElementById('item-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Atualiza quantidade no modal
+    function updateModalQuantity(change) {
+      currentQuantity += change;
+      if (currentQuantity < 1) currentQuantity = 1;
+      if (currentQuantity > 20) currentQuantity = 20;
+      document.getElementById('modal-quantity').textContent = currentQuantity;
+    }
+    
+    // Adiciona item do modal ao carrinho
+    function addItemFromModal() {
+      const notes = document.getElementById('item-notes').value;
+      
+      for (let i = 0; i < currentQuantity; i++) {
+        addItem(currentItem.name, currentItem.price, currentItem.image, notes);
+      }
+      
+      closeItemModal();
     }
     
     // Adiciona item ao carrinho
@@ -1708,23 +1850,37 @@
       }
       
       updateCart();
+      updateCartBadge();
       
       // Feedback visual
-      const buttons = document.querySelectorAll(`.add-to-cart[onclick*="${name}"]`);
-      buttons.forEach(button => {
+      const button = document.getElementById('add-to-cart-modal-btn');
+      if (button) {
         button.textContent = 'Adicionado!';
         button.style.backgroundColor = '#50a773';
         setTimeout(() => {
           button.textContent = 'Adicionar';
           button.style.backgroundColor = '';
         }, 1000);
-      });
+      }
+    }
+    
+    // Atualiza badge do carrinho
+    function updateCartBadge() {
+      const badge = document.getElementById('cart-badge');
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      if (totalItems > 0) {
+        badge.textContent = totalItems;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
     }
     
     // Atualiza o carrinho
     function updateCart() {
-      const cartItemsElement = document.getElementById('cart-items');
-      const cartTotalElement = document.getElementById('cart-total');
+      const cartItemsElement = document.getElementById('order-summary');
+      const cartTotalElement = document.getElementById('order-total').lastElementChild;
       
       if (cart.length === 0) {
         cartItemsElement.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray-dark);">Seu carrinho está vazio</div>';
@@ -1740,21 +1896,25 @@
         total += itemTotal;
         
         itemsHTML += `
-          <div class="cart-item">
-            <div class="cart-item-name">${item.quantity}x ${item.name}</div>
-            <div class="cart-item-price">R$ ${itemTotal.toFixed(2)}</div>
-            <div class="cart-item-actions">
-              <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity - 1})">-</button>
-              <span class="quantity-value">${item.quantity}</span>
-              <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity + 1})">+</button>
-            </div>
+          <div class="order-item">
+            <span>${item.quantity}x ${item.name}</span>
+            <span>R$ ${itemTotal.toFixed(2)}</span>
           </div>
-          ${item.notes ? `<div style="font-size: 12px; color: var(--gray-dark); margin-bottom: 10px;">Obs: ${item.notes}</div>` : ''}
+          ${item.notes ? `<div class="order-item" style="font-size: 12px; color: var(--gray-dark);">Obs: ${item.notes}</div>` : ''}
         `;
       });
       
+      itemsHTML += `
+        <div class="order-item" style="border-top: 1px solid var(--gray-medium); padding-top: 10px;">
+          <span>Subtotal</span>
+          <span>R$ ${total.toFixed(2)}</span>
+        </div>
+      `;
+      
       cartItemsElement.innerHTML = itemsHTML;
       cartTotalElement.textContent = `R$ ${total.toFixed(2)}`;
+      
+      updateCartBadge();
     }
     
     // Atualiza quantidade de um item
@@ -1765,26 +1925,14 @@
         cart[index].quantity = newQuantity;
       }
       updateCart();
+      updateCartBadge();
     }
     
     // Limpa o carrinho
     function clearCart() {
       cart = [];
       updateCart();
-    }
-    
-    // Alterna visibilidade do carrinho
-    function toggleCart() {
-      const cartSection = document.querySelector('.cart-section');
-      const toggleButton = document.querySelector('.cart-toggle');
-      
-      if (cartSection.classList.contains('hidden')) {
-        cartSection.classList.remove('hidden');
-        toggleButton.textContent = 'Ocultar';
-      } else {
-        cartSection.classList.add('hidden');
-        toggleButton.textContent = 'Mostrar';
-      }
+      updateCartBadge();
     }
     
     // Abre o modal de checkout
@@ -1801,42 +1949,19 @@
       
       const modal = document.getElementById('checkout-modal');
       modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
       
       // Atualiza resumo do pedido
-      const orderSummary = document.getElementById('order-summary');
-      let summaryHTML = '';
-      let subtotal = 0;
-      
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        subtotal += itemTotal;
-        
-        summaryHTML += `
-          <div class="order-item">
-            <span>${item.quantity}x ${item.name}</span>
-            <span>R$ ${itemTotal.toFixed(2)}</span>
-          </div>
-          ${item.notes ? `<div class="order-item" style="font-size: 12px; color: var(--gray-dark);">Obs: ${item.notes}</div>` : ''}
-        `;
-      });
-      
-      summaryHTML += `
-        <div class="order-item" style="border-top: 1px solid var(--gray-medium); padding-top: 10px;">
-          <span>Subtotal</span>
-          <span>R$ ${subtotal.toFixed(2)}</span>
-        </div>
-      `;
-      
-      orderSummary.innerHTML = summaryHTML;
+      updateCart();
       
       // Atualiza total
       updateOrderTotal();
     }
     
-    // Fecha o modal
+    // Fecha modal
     function closeModal() {
-      const modal = document.getElementById('checkout-modal');
-      modal.style.display = 'none';
+      document.getElementById('checkout-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
     }
     
     // Seleciona opção de entrega
@@ -2056,8 +2181,14 @@
     // Fecha modal ao clicar fora
     window.onclick = function(event) {
       const modal = document.getElementById('checkout-modal');
+      const itemModal = document.getElementById('item-modal');
+      
       if (event.target === modal) {
         closeModal();
+      }
+      
+      if (event.target === itemModal) {
+        closeItemModal();
       }
     }
     
